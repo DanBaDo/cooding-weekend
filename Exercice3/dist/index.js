@@ -13,25 +13,28 @@
 var SortPersons = /** @class */ (function () {
     function SortPersons() {
     }
-    SortPersons.prototype.compare = function (pers1, pers2) {
+    SortPersons.prototype.greater = function (pers1, pers2) {
         return pers1.age > pers2.age;
     };
-    SortPersons.prototype.switchPersons = function (idx1, idx2, list) {
+    SortPersons.prototype.switch = function (idx1, idx2, list) {
         var tmp = list[idx1];
         list[idx1] = list[idx2];
         list[idx2] = tmp;
     };
-    SortPersons.prototype.bubble = function (list) {
+    SortPersons.prototype.bubbleSort = function (list) {
         for (var index1 = 0; index1 < list.length; index1++) {
             var currentMinorIdx = index1;
             for (var index2 = index1 + 1; index2 < list.length; index2++) {
-                if (this.compare(list[currentMinorIdx], list[index2]))
+                if (this.greater(list[currentMinorIdx], list[index2]))
                     currentMinorIdx = index2;
             }
             if (index1 !== currentMinorIdx)
-                this.switchPersons(index1, currentMinorIdx, list);
+                this.switch(index1, currentMinorIdx, list);
         }
         return list;
+    };
+    SortPersons.prototype.merge = function () {
+        return [];
     };
     return SortPersons;
 }());
@@ -48,6 +51,6 @@ for (var i = 5; i >= 0; i--) {
     person.age = i * 2;
     personList.push(person);
 }
-sortPersons.bubble(personList);
+sortPersons.bubbleSort(personList);
 console.log(personList);
 //# sourceMappingURL=index.js.map

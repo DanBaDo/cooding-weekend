@@ -1,41 +1,41 @@
-/*class SortingObject implements Sorting {
-
-    merge<T>(data: SortingData<T>): SortingData<T> {
-        return []
-    }
-
-    bubbleSort<T>(data: SortingData<T>): SortingData<T> {
-        return []
-    }
-
-}*/
-
 class Person implements Person {
-    age: Number;
-    constructor(age: Number){ this.age = age}
+    constructor(age: Number, name?: string, surname?: string){
+        this.age = age
+        this.name = name
+        this.surname = surname
+    }
 }
 
-class SortPersons implements Sorting, Compares, SwitchItems {
+const oldestThan: GreaterThan<Person> = (per1, per2) => {
+    return per1.age > per2.age
+}
+
+const switchPerson: SwitchItems<Person> = (idx1, idx2, personList) => {
+    const temp = personList[idx1];
+    personList[idx1] = personList[idx2];
+    personList[idx2] = temp
+}
+
+class SortIt<T> implements SortingElements<T> {
+    list: SortingData<T>;
+    isGreather: GreaterThan<T>;
+    sw: SwitchItems<T>;
+    constructor(list: SortingData<T>, isGreatherMethod: GreaterThan<T>, switchMethod: SwitchItems<T> ) {
+        this.list = list;
+        this.isGreather = isGreatherMethod;
+        this.sw = switchMethod;
+    }
     
-    greater<Person> (pers1: Person, pers2: Person): boolean {
-        return pers1.age > pers2.age;
-    }
-
-    switch<Person> (idx1: number, idx2: number, list: SortingData<Person>) {
-        const tmp: Person = list[idx1];
-        list[idx1] = list[idx2];
-        list[idx2] = tmp;
-    }
-
-    bubbleSort<Person> (list: SortingData<Person>): SortingData<Person> {
-        for (let index1: number = 0; index1 < list.length; index1++) {
+    bubbleSort<T> (): SortingData<T> {
+        for (let index1: number = 0; index1 < this.list.length; index1++) {
             let currentMinorIdx: number = index1;
-            for (let index2: number = index1+1; index2 < list.length; index2++) {
-                if ( this.greater( list[currentMinorIdx], list[index2] ) ) currentMinorIdx = index2;
+            for (let index2: number = index1+1; index2 < this.list.length; index2++) {
+                if ( this.isGreather( this.list[currentMinorIdx], this.list[index2] ) ) currentMinorIdx = index2;
             }
-            if (index1 !== currentMinorIdx) this.switch(index1, currentMinorIdx, list)
+            if (index1 !== currentMinorIdx) this.sw(index1, currentMinorIdx, this.list);
         }
-        return list
+        //return this.list;
+        return []
     }
 
     merge () {
@@ -47,13 +47,12 @@ class SortPersons implements Sorting, Compares, SwitchItems {
 // Tests
 
 const personList: SortingData<Person> = [];
-const sortPersons = new SortPersons();
-
+const sortPersons = new SortIt<Person>(personList,oldestThan,switchPerson)
 for (let i: number = 5; i >= 0; i--) {
     const person = new Person(i*2);
     personList.push(person);
 }
 
-sortPersons.bubbleSort(personList)
+sortPersons.bubbleSort()
 
-console.log(personList);
+console.log(sortPersons.list);
